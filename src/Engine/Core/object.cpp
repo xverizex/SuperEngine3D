@@ -61,35 +61,13 @@ Object::Object(MODEL_ASSET res, TYPE_SHADERS tshader, bool dependies)
 	cur_frame = 0;
 
 	
-	if (dependies == true) {
-		switch(res) {
-			case MODEL_TILE_GRASS:
-				if (rand() % 6 <= 2) {
-					bonus = new Berry();
-				} else {//if (rand() % 12 <= 2) {
-					bonus = new Card();
-				}
-				break;
-			case MODEL_TILE_GROUND:
-				if (rand() % 6 <= 2) {
-					bonus = new Berry();
-				} else {//if (rand() % 12 <= 2) {
-					bonus = new Card();
-				}
-				break;
-			default:
-				break;
-		}
-	} else {
-		res = MODEL_TILE_GROUND;
-	}
 	typeRes = res;
 
 	WindowSize* ws = WindowSize::getInstance();
 	
 	float aspect = static_cast<float>(ws->width) / static_cast<float>(ws->height);
 
-	projection = glm::perspective (glm::radians(45.f), aspect, 0.1f, 100.f);
+	projection = glm::perspective (glm::radians(45.f), aspect, 0.1f, 1000.f);
 	
 	model = glm::mat4(1.0f);
 	rotate = glm::mat4(1.0f);
@@ -103,6 +81,26 @@ Object::Object(MODEL_ASSET res, TYPE_SHADERS tshader, bool dependies)
 	vao = new uint32_t[count];
 	vbo = new uint32_t[count];
 
+	aabb_box.min = glm::vec3(FLT_MAX);
+	aabb_box.max = glm::vec3(-FLT_MAX);
+
+
+	for (uint32_t i = 0; i < vdata->size; i++) {
+		glm::vec3 point;
+		 point.x = vdata->f[0][i * 8 + 0];
+		 point.y = vdata->f[0][i * 8 + 1];
+		 point.z = vdata->f[0][i * 8 + 2];
+
+		 if (point.x < aabb_box.min.x) aabb_box.min.x = point.x; 
+		 if (point.y < aabb_box.min.y) aabb_box.min.y = point.y;
+		 if (point.z < aabb_box.min.z) aabb_box.min.z = point.z;
+
+		if (point.x > aabb_box.max.x) aabb_box.max.x = point.x;
+		if (point.y > aabb_box.max.y) aabb_box.max.y = point.y;
+		if (point.z > aabb_box.max.z) aabb_box.max.z = point.z;
+	}
+
+	
 	glGenBuffers (count, vbo);
 	glGenVertexArrays (count, vao);
 	for (int i = 0; i < count; i++) {
