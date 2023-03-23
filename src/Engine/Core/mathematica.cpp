@@ -8,6 +8,29 @@
 #include <camera.h>
 #include <limits>
 
+/*
+bool rayAABBIntersection(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, const glm::mat4& transformMatrix, const glm::vec3& aabbMin, const glm::vec3& aabbMax, float& tMin, float& tMax)
+{
+    // Apply the inverse transformation to the ray origin and direction
+    glm::mat4 inverseTransform = glm::inverse(transformMatrix);
+    glm::vec4 invRayOrigin = inverseTransform * glm::vec4(rayOrigin, 1.0f);
+    glm::vec4 invRayDirection = inverseTransform * glm::vec4(rayDirection, 0.0f);
+
+    // Calculate the minimum and maximum t values for each axis
+    glm::vec3 invRayDir = glm::vec3(invRayDirection);
+    glm::vec3 tMinVec = (glm::vec3(aabbMin) - glm::vec3(invRayOrigin)) / invRayDir;
+    glm::vec3 tMaxVec = (glm::vec3(aabbMax) - glm::vec3(invRayOrigin)) / invRayDir;
+
+    // Calculate the minimum and maximum t values for the intersection
+    glm::vec3 tMinVecOrdered = glm::min(tMinVec, tMaxVec);
+    glm::vec3 tMaxVecOrdered = glm::max(tMinVec, tMaxVec);
+    tMin = glm::max(glm::max(tMinVecOrdered.x, tMinVecOrdered.y), tMinVecOrdered.z);
+    tMax = glm::min(glm::min(tMaxVecOrdered.x, tMaxVecOrdered.y), tMaxVecOrdered.z);
+
+    // Check if there is an intersection
+    return tMax >= tMin && tMax >= 0.0f;
+}
+*/
 
 glm::vec2 ray_intersect_AABB (glm::vec3 &orig, glm::vec3 &dir, Object *obj)
 {
